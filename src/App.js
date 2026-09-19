@@ -45,7 +45,7 @@ function App() {
   return (
     <div className="App">
       {weather && (
-        <div>
+        <div className="weather-card">
           <h2>Current Weather</h2>
           <p>Temperature: {weather.current_weather?.temperature}°C</p>
           <p>Wind Speed: {weather.current_weather?.windspeed} km/h</p>
