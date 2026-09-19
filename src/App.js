@@ -1,23 +1,56 @@
 import logo from './logo.svg';
 import './App.css';
+import { useEffect, useState } from 'react';
 
 function App() {
+  const [weather, setWeather] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    const fetchWeather = async () => {
+      setIsLoading(true)
+      try {
+        const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=1.3521&longitude=103.8198&current_weather=true`);
+        const data = await response.json();
+        setWeather(data);
+      } catch (e){
+        setError(e);
+      } finally {
+        setIsLoading(false);
+      }
+      
+    }
+
+    fetchWeather();
+    
+  }, [])
+
+  if(isLoading) {
+    return (
+      <p>Loading...</p>
+    )
+  }
+
+  if(error){
+    return (
+      <div>
+        <p>Try again...</p>
+        <p>Error: {error.message}</p>
+      </div>
+    )
+  }
+  
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {weather && (
+        <div>
+          <h2>Current Weather</h2>
+          <p>Temperature: {weather.current_weather?.temperature}°C</p>
+          <p>Wind Speed: {weather.current_weather?.windspeed} km/h</p>
+        </div>
+      )}
     </div>
   );
 }
